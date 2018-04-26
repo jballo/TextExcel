@@ -62,7 +62,7 @@ public class FormulaCell extends RealCell{
 			if(i%2 == 0) {
 				if(splitFormula[i] instanceof String) {
 					SpreadsheetLocation temp = new SpreadsheetLocation(splitFormula[i]);
-					Double
+					Double temp = natalie.getCell(temp).super.getDoubleValue();
 					operands[operandPlacement] = natalie.getCell(temp).getDoubleValue;
 				}else {
 					operands[operandPlacement] = (Double.parseDouble(splitFormula[i]));
