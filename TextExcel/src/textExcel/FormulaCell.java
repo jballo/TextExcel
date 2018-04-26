@@ -4,9 +4,11 @@ import java.util.Arrays;
 
 public class FormulaCell extends RealCell{
 	private String formulaCell;
-	public FormulaCell(String input){
+	Spreadsheet natalie;
+	
+	public FormulaCell(String input,Spreadsheet boi){
 		super(input);
-		this.formulaCell = input;
+		natalie = boi;
 	}
 	
 	public static void testFormulaVariables(String[] form, Double[] operands, String[] signs) {
@@ -34,12 +36,15 @@ public class FormulaCell extends RealCell{
 		
 		System.out.println("splitFormula: " + Arrays.toString((splitFormula))+ "\nsplitFormula length: " + splitFormula.length);
 		System.out.println("Operands length: " + operands.length + "\nSigns length: " + signs.length);
+		
 		//for-loop for filling in the signs
 		int signPlacement = 0;
-		for(int i = 1; i < splitFormula.length; i+=2) {
+		
+		//Working forloop to fill in the operands for chkpnt 4
+		/*for(int i = 1; i < splitFormula.length; i+=2) {
 				signs[signPlacement] = (splitFormula[i]);
 				signPlacement++;
-		}
+		}*/
 		
 		//for-loop for filling in the operands
 		int operandPlacement = 0;
@@ -53,17 +58,18 @@ public class FormulaCell extends RealCell{
 		}
 		
 		//Fills in operands for checkpoint 5
-		/*for(int i = 0; i <= splitFormula.length; i++) {
+		for(int i = 0; i <= splitFormula.length; i++) {
 			if(i%2 == 0) {
 				if(splitFormula[i] instanceof String) {
-					
 					SpreadsheetLocation temp = new SpreadsheetLocation(splitFormula[i]);
+					Double
+					operands[operandPlacement] = natalie.getCell(temp).;
 				}else {
 					operands[operandPlacement] = (Double.parseDouble(splitFormula[i]));
 					operandPlacement++;
 				}
 			}
-		}*/
+		}
 		
 		testFormulaVariables(splitFormula, operands, signs);
 		Double resultant = operands[0];

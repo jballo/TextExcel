@@ -28,14 +28,15 @@ public class Spreadsheet implements Grid
 			SpreadsheetLocation temp = new SpreadsheetLocation(splitCommand[1]);
 			values[temp.getRow()][temp.getCol()] = new EmptyCell();
 			return getGridText();
-		
+	
 		}else if(splitCommand.length == 1) {		    //this method will return the value of a cell (works)
 			SpreadsheetLocation temp = new SpreadsheetLocation(splitCommand[0]);
 			return getCell(temp).fullCellText();
 			
 		}else if((splitCommand[1].equals("=")) && (splitCommand.length == 3)) {  //this method will assign a value to a cell
 				SpreadsheetLocation temp = new SpreadsheetLocation(splitCommand[0]);
-				checkWhatInputType(temp,splitCommand[2]);
+				//checkWhatInputType(temp,splitCommand[2],values);
+				checkWhatINputType(temp,splitCommand[2],values);
 				return getGridText();
 		}else {
 			return "Not an input";
@@ -93,7 +94,7 @@ public class Spreadsheet implements Grid
 		
 	}
 	//This method will check what is inside the input to assign it to the proper cell type
-	public void checkWhatInputType(Location loc, String input) {
+	public void checkWhatInputType(Location loc, String input,Spreadsheet yes) {
 		
 		
 		if(input.contains("\"")) {
@@ -101,7 +102,7 @@ public class Spreadsheet implements Grid
 		}else if(input.contains("%")) {
 			values[loc.getRow()][loc.getCol()] = new PercentCell(input);
 		}else if (input.contains("(")) { 
-			values[loc.getRow()][loc.getCol()] = new FormulaCell(input);
+			values[loc.getRow()][loc.getCol()] = new FormulaCell(input, yes);
 		}else{
 			values[loc.getRow()][loc.getCol()] = new ValueCell(input);
 		}	
