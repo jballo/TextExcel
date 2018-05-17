@@ -1,18 +1,117 @@
 package textExcel;
-
 import java.util.Arrays;
+/*Jonathan Ballona S.
+ * 11 May, 2018
+ * Period 2
+ * Formula cell to deal with operations (equations)
+ */
 
 public class FormulaCell extends RealCell{
-	private String formulaCell;
-	Spreadsheet natalie;
+	Cell[][] sprdSheet;
 	
-	public FormulaCell(String input,Spreadsheet boi){
+	public FormulaCell(String input, Cell[][] spSht){
 		super(input);
-		natalie = boi;
+		sprdSheet = spSht;
+	}
+
+	
+	public double getDoubleValue() {
+
+		double doubleValue = 0.0;
+		if(super.fullCellText().contains("+") || super.fullCellText().contains("-") 
+					|| super.fullCellText().contains("*") || super.fullCellText().contains("/")) { //Deal with equation commands
+			
+			String[] splitFormula = super.fullCellText().substring(2,super.fullCellText().length()-2).split(" ");
+		
+			String[] sumFormula = super.fullCellText().substring(6, super.fullCellText().length()-2).split("-");
+
+			if(splitFormula[0].toUpperCase().equals("SUM")) {
+				doubleValue = calculateSumOfIntervals(sumFormula[0],sumFormula[1]);
+				
+				
+			}else if( splitFormula[0].toUpperCase().equals("AVG")) { // Dealing with average command
+				
+				SpreadsheetLocation intervalStart = new SpreadsheetLocation(sumFormula[0]);
+				SpreadsheetLocation intervalEnd = new SpreadsheetLocation(sumFormula[1]);
+				
+				double divisible = ((intervalEnd.getRow() - intervalStart.getRow()) +1)*((intervalEnd.getCol() - intervalStart.getCol())+1);
+				double tempSum =  calculateSumOfIntervals(sumFormula[0],sumFormula[1]);
+				doubleValue = (tempSum/divisible); 
+				
+			}else if( !(splitFormula[0].equals("SUM")) && !(splitFormula[0].equals("AVG"))) {
+				doubleValue = oneStringCompleteOperation(splitFormula);
+			}
+			
+		}else {
+			//To test for testAvgSingleNontrivial
+			doubleValue = Double.parseDouble(super.fullCellText().substring(1, super.fullCellText().length() -2));
+		}
+		
+		
+		return doubleValue;
+		
 	}
 	
-	public static void testFormulaVariables(String[] form, Double[] operands, String[] signs) {
+	public double oneStringCompleteOperation(String[] equation) {
+		Double resultValue;
+		//To deal with non reference values if the 1st isn't
+		if(Character.isLetter(equation[0].charAt(0))) {
+			SpreadsheetLocation temp = new SpreadsheetLocation(equation[0]);
+			resultValue = ( (RealCell)sprdSheet[temp.getRow()][temp.getCol()] ).getDoubleValue();
+		}else {
+			resultValue = Double.parseDouble(equation[0]);
+		}
+		
+		//Goes through a whole string to complete the operation
+		for( int index = 1; index < equation.length-1; index+=2) {
+			 double tempNum;
+			if(Character.isLetter(equation[index+1].charAt(0)) ) {
+				System.out.println("True");
+				SpreadsheetLocation temp = new SpreadsheetLocation(equation[index+1]);
+				tempNum = ( (RealCell)sprdSheet[temp.getRow()][temp.getCol()] ).getDoubleValue();
+			}else {
+				tempNum = Double.parseDouble(equation[index+1]);
+			}
+			if(equation[index].equals("*")){              //Multiply
+				resultValue = (resultValue * tempNum);
+			}else if(equation[index].equals("/")) {			//Division
+				resultValue = ( resultValue / tempNum);
+			}else if(equation[index].equals("+")) {			//Addition
+				resultValue = (resultValue + tempNum );
+			}else if(equation[index].equals("-")) {			//Subtraction
+				resultValue = (resultValue - tempNum );
+			}
+		}
+		
+		return resultValue;
+	}
+	public double calculateSumOfIntervals(String intervalA, String intervalB) {
+		double sumResult = 0;
+		
+		SpreadsheetLocation intervalStart = new SpreadsheetLocation(intervalA);
+		SpreadsheetLocation intervalEnd = new SpreadsheetLocation(intervalB);
+		
+		int startRow = intervalStart.getRow();
+		int endRow = intervalEnd.getRow();
+		
+		int startCol = intervalStart.getCol();
+		int endCol = intervalEnd.getCol();
+		
+		//Test f5 = ( SUM b3 - d4 )
+		for( int row = startRow; row <= endRow; row++) {
+			for(int col = startCol; col <= endCol; col++) {
+				if(sprdSheet[row][col] instanceof EmptyCell) {
+					sumResult+= 0;
+				}else {
+					sumResult+=((RealCell)sprdSheet[row][col]).getDoubleValue();
+				}
+			}
+		}
+			return sumResult;
+	}
 
+	//Just in case if I run into an error
+	public static void testFormulaVariables(String[] form, Double[] operands, String[] signs) {
 		System.out.println("splitFormula: " + Arrays.toString((form)));
 		System.out.print("Operands: ");
 		for(int i = 0; i < operands.length; i++) {
@@ -25,73 +124,4 @@ public class FormulaCell extends RealCell{
 		}
 		System.out.println("");
 	}
-	
-	public double getDoubleValue() {
-		//String[] splitFormula = super.fullCellText().substring(1,super.fullCellText().length()-1).split(" ");
-		String[] splitFormula = super.fullCellText().substring(2,super.fullCellText().length()-2).split(" ");
-		
-		
-		String[] signs = new String[(splitFormula.length-1)/2];	
-		Double [] operands = new Double [(splitFormula.length - signs.length)];
-		
-		System.out.println("splitFormula: " + Arrays.toString((splitFormula))+ "\nsplitFormula length: " + splitFormula.length);
-		System.out.println("Operands length: " + operands.length + "\nSigns length: " + signs.length);
-		
-		//for-loop for filling in the signs
-		int signPlacement = 0;
-		
-		//Working forloop to fill in the operands for chkpnt 4
-		/*for(int i = 1; i < splitFormula.length; i+=2) {
-				signs[signPlacement] = (splitFormula[i]);
-				signPlacement++;
-		}*/
-		
-		//for-loop for filling in the operands
-		int operandPlacement = 0;
-		
-		//Works for checkpoint 4 to fill in the operands
-		for(int i = 0; i <= splitFormula.length; i++) {
-			if(i%2 == 0) {
-				operands[operandPlacement] = (Double.parseDouble(splitFormula[i]));
-				operandPlacement++;
-			}
-		}
-		
-		//Fills in operands for checkpoint 5
-		for(int i = 0; i <= splitFormula.length; i++) {
-			if(i%2 == 0) {
-				if(splitFormula[i] instanceof String) {
-					SpreadsheetLocation temp = new SpreadsheetLocation(splitFormula[i]);
-					//Double temp = natalie.getCell(temp).super.getDoubleValue();
-					operands[operandPlacement] = natalie.getCell(temp).getDoubleValue;
-				}else {
-					operands[operandPlacement] = (Double.parseDouble(splitFormula[i]));
-					operandPlacement++;
-				}
-			}
-		}
-		
-		testFormulaVariables(splitFormula, operands, signs);
-		Double resultant = operands[0];
-		
-		System.out.println("Before Calculations: " + resultant);
-		
-		for(int i = 0; i < (signs.length); i++) {
-			if(signs[i].equals("*")){
-				resultant = (resultant * operands[i+1]);
-			}else if(signs[i].equals("/")) {
-				resultant = ( resultant / operands[i+1]);
-			}else if(signs[i].equals("+")) {
-				resultant = (resultant + operands[i+1] );
-			}else if(signs[i].equals("-")) {
-				resultant = (resultant - operands[i+1] );
-			}
-		}
-		System.out.println("After Calculations: " + resultant);
-		return resultant;
-	}
-	
-	
 }
-
-

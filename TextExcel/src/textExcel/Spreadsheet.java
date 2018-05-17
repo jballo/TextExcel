@@ -1,13 +1,15 @@
 package textExcel;
 
-// Update this file with your own code.
+/*Jonathan Ballona S.
+ * 11 May, 2018
+ * Period 2
+ * Spreadsheet class to create the spreadsheet and to execute commands with processCommands
+ */
 
 public class Spreadsheet implements Grid
 {
-	private int rows;
-	private int cols;
-	
 	Cell[][] values= new Cell[20][12];
+	
 	public Spreadsheet() {
 		for(int i = 0; i < getRows(); i++) {
 			for(int j = 0; j < getCols(); j++) {
@@ -15,7 +17,7 @@ public class Spreadsheet implements Grid
 			}
 		}
 	}
-
+//The userinput 
 	@Override
 	public String processCommand(String command)
 	{
@@ -28,15 +30,14 @@ public class Spreadsheet implements Grid
 			SpreadsheetLocation temp = new SpreadsheetLocation(splitCommand[1]);
 			values[temp.getRow()][temp.getCol()] = new EmptyCell();
 			return getGridText();
-	
+		
 		}else if(splitCommand.length == 1) {		    //this method will return the value of a cell (works)
 			SpreadsheetLocation temp = new SpreadsheetLocation(splitCommand[0]);
 			return getCell(temp).fullCellText();
 			
 		}else if((splitCommand[1].equals("=")) && (splitCommand.length == 3)) {  //this method will assign a value to a cell
 				SpreadsheetLocation temp = new SpreadsheetLocation(splitCommand[0]);
-				//checkWhatInputType(temp,splitCommand[2],values);
-				checkWhatINputType(temp,splitCommand[2],values);
+				checkWhatInputType(temp,splitCommand[2],values);
 				return getGridText();
 		}else {
 			return "Not an input";
@@ -44,16 +45,12 @@ public class Spreadsheet implements Grid
 	}
 
 	@Override
-	public int getRows()
-	{
-
+	public int getRows(){
 		return 20;
 	}
 
 	@Override
-	public int getCols()
-	{
-
+	public int getCols(){
 		return 12;
 	}
 
@@ -65,8 +62,7 @@ public class Spreadsheet implements Grid
 	}
 
 	@Override
-	public String getGridText()
-	{
+	public String getGridText(){
 		String fullGridTxt = "";
 		for(char letter = 'A'; letter <= 'L'; letter++) {     //Adds the header for the spreadsheet
 			if(letter == 'A') {
@@ -85,7 +81,7 @@ public class Spreadsheet implements Grid
 				fullGridTxt += i + " ";
 			}
 			for(int j = 0; j < 12; j++) {
-				fullGridTxt += "|" + values[i-1][j].abbreviatedCellText();
+				fullGridTxt += "|" + values[i-1][j].abbreviatedCellText(); //will return the abbreviatedCell Text of the cell type
 			}
 			fullGridTxt += "|\n";
 		}
@@ -94,17 +90,15 @@ public class Spreadsheet implements Grid
 		
 	}
 	//This method will check what is inside the input to assign it to the proper cell type
-	public void checkWhatInputType(Location loc, String input,Spreadsheet yes) {
-		
-		
-		if(input.contains("\"")) {
-			values[loc.getRow()][loc.getCol()] = new TextCell(input);
-		}else if(input.contains("%")) {
+	public void checkWhatInputType(Location loc, String input, Cell[][] anthony) {
+		if(input.contains("\"")) {												//Condition for textCell
+			values[loc.getRow()][loc.getCol()] = new TextCell(input); 
+		}else if(input.contains("%")) {											//Condition for percenCell
 			values[loc.getRow()][loc.getCol()] = new PercentCell(input);
-		}else if (input.contains("(")) { 
-			values[loc.getRow()][loc.getCol()] = new FormulaCell(input, yes);
+		}else if (input.contains("(")) { 										//Condition for formulaCell
+			values[loc.getRow()][loc.getCol()] = new FormulaCell(input,anthony);
 		}else{
-			values[loc.getRow()][loc.getCol()] = new ValueCell(input);
+			values[loc.getRow()][loc.getCol()] = new ValueCell(input);			//makes a value cell 
 		}	
 	}
 	//This method will clear out the whole spreadsheet by calling this
@@ -116,5 +110,3 @@ public class Spreadsheet implements Grid
 		}
 	}	
 }
-
-

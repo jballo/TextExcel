@@ -5,7 +5,11 @@ import java.util.Scanner;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
 
-// Update this file with your own code.
+/*Jonathan Ballona S.
+ * 11 May, 2018
+ * Period 2
+ * Client code to execute the commands
+ */
 
 public class TextExcel 
 {
@@ -13,13 +17,10 @@ public class TextExcel
 	{
 		Scanner input = new Scanner(System.in);
 		Boolean ended = false;
-		Spreadsheet  marcusB= new Spreadsheet();
+		Spreadsheet spSht= new Spreadsheet();
 		do{
-			//TestsALL.Helper th = new TestsALL.Helper();
-			//System.out.println(th.getText());
-			
 			String commands = input.nextLine(); 
-			System.out.println(marcusB.processCommand(commands));
+			System.out.println(spSht.processCommand(commands));
 			if(input.equals("quit")) {
 				ended = true;
 			}

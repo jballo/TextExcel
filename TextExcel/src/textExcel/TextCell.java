@@ -1,5 +1,11 @@
 package textExcel;
 
+/*Jonathan Ballona S.
+ * 11 May, 2018
+ * Period 2
+ * Text Cell class to create strings/text for cells
+ */
+
 public class TextCell implements Cell{
 	private String text;
 	
@@ -29,14 +35,6 @@ public class TextCell implements Cell{
 		}else {
 				return abr.substring(0,10);
 		}
-		/*if(abr.length() < 10) {
-			while(abr.length() < 10) {
-				abr=" ";
-			}
-			return abr;
-		}else {
-			return abr.substring(0,10);
-		}*/
 	}
 	
 	public String fullCellText() {

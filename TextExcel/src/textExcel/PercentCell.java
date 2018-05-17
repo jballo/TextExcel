@@ -1,5 +1,5 @@
 package textExcel;
-
+//deals with creating a percent cell
 public class PercentCell extends RealCell{
 	public PercentCell(String percentValue){
 		super(percentValue);
@@ -18,7 +18,7 @@ public class PercentCell extends RealCell{
 		System.out.println("Percent:" + percent);
 		return Double.parseDouble(percent);
 	}
-	
+	//gets the full value of the percentcell that is unabbreviated
 	public String fullCellText() {
 		System.out.println(getDoubleValue() * 0.01);
 		return (getDoubleValue() * 0.01) + "";
